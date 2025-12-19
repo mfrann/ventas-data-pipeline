@@ -5,7 +5,10 @@ from sqlalchemy import create_engine
 
 
 
-#EXTRAER
+#================================================#
+#            TAREA 1: EXTRAER (EXTRACT)          #
+#================================================#
+
 print('Iniciando lectura de archivos...')
 
 #===CONFIGURACIÓN===#
@@ -53,9 +56,7 @@ def verify_null(csv):
 
 
 
-#================================================#
-#            TAREA 1: EXTRAER (EXTRACT)          #
-#================================================#
+
 
 def show_info_complete(name, df):
     print(f"\n{'='*20}")
@@ -76,7 +77,7 @@ def show_info_complete(name, df):
 
 #======COMPROBAR LOS DATOS ======#
 
-'''
+
 show_info_complete("ventas", df_ventas)
 print("==="*20)
 show_info_complete("clientes", df_clientes)
@@ -87,7 +88,7 @@ show_info_complete("vendedores", df_vendedores)
 print("==="*20)
 
 print("\n✓ Exploración completada")
-'''
+
 
 
 
@@ -95,9 +96,9 @@ print("\n✓ Exploración completada")
 #          TAREA 2: TRANSFORMAR (TRANSFORM)      #
 #================================================#
 
-#--- PASO 1: ELIMINAR DUPLICADOS ---#
-'''
 
+print('Eliminando duplicado de archivos...')
+#--- PASO 1: ELIMINAR DUPLICADOS ---#
 def delete_duplicates(df, name):
     """
 
@@ -136,9 +137,7 @@ print("\n" + "="*60)
 print("           ELIMINANDO DUPLICADOS")
 print("="*60)
 
-#AGREGAR A LOS ARCHIVOS CSV
-
-#Usamos la misma variable, para luego no andar cambiando, y evitar errores.
+# --- EJECUTAR
 df_ventas = delete_duplicates(df_ventas, 'Ventas')
 df_vendedores = delete_duplicates(df_vendedores, 'Vendedores')
 df_clientes = delete_duplicates(df_clientes, 'Clientes')
@@ -149,10 +148,13 @@ print("\n" + "="*60)
 print("✓ DUPLICADOS ELIMINADOS EN TODAS LAS TABLAS")
 print("="*60)
 
-'''
 
+print("===" * 30)
+
+
+
+print('\nManejando nulos de archivos...')
 #--- PASO 2: MANEJAR NULOS ---#
-
 def identify_nulls(df, name):
     """
     Solo mostrar donde hay nulos
@@ -170,12 +172,14 @@ def identify_nulls(df, name):
         #Comprueba si valores nulos es mayor a 0 
         for column, amount in null_for_column[null_for_column > 0].items(): #Y recorre por columna y cantidad en la variable, no usamos sum() pq iterariamos en un solo numero
             print(f"  - {column}: {amount} nulos")
-    
+
+# --- EJECUTAR
 identify_nulls(df_ventas, 'Ventas')
 identify_nulls(df_clientes, 'Clientes')
 identify_nulls(df_productos, 'Productos')
 identify_nulls(df_vendedores, 'Vendedores')
-    
+
+print("===" * 30)
 
 #====== FUNCION PARA VENTAS ======#
 def clean_ventas(df, name):
@@ -188,7 +192,7 @@ def clean_ventas(df, name):
 
     print(f'\n--- LIMPIANDO {name.upper()} ---')
 
-    #CONTAR FILAS ANTES
+    # --- CONTAR FILAS ANTES
     rows_before = len(df)
     #CONTAR NULOS
     nulls = df.isnull().sum()
@@ -197,10 +201,10 @@ def clean_ventas(df, name):
     print(f'Filas antes: {rows_before}')
     print(f'Filas con nulos: {total_nulls}')
 
-    #ELIMINAR NULOS
+    # --- ELIMINAR NULOS 
     df = df.dropna() #Elimina los nulos
 
-    #CONTAR FILAS DESPUES
+    # --- CONTAR FILAS DESPUES
 
     rows_after = len(df)
     rows_deleted = rows_before - rows_after
@@ -208,7 +212,7 @@ def clean_ventas(df, name):
     print(f'Filas después: {rows_after}')
     print(f'Filas eliminadas: {rows_deleted}')
 
-    #MENSAJE DE EXITO 
+    # --- MENSAJE DE EXITO
 
     if rows_deleted == 0:
         print('✓ Sin nulos para eliminar')
@@ -219,13 +223,66 @@ def clean_ventas(df, name):
 
     return df
 
-
-df_ventas = clean_ventas(df_ventas, 'Ventas')
-
+print("===" * 30)
 
 #====== FUNCION PARA PRODUCTOS ======#
-def clean_productos(df):
-    pass
+def clean_productos(df, name):
+
+
+
+    print(f'\n--- LIMPIANDO {name.upper()} ---')
+
+
+
+    # ====== CONTAR ======#
+
+
+    # --- CONTAR FILAS ANTES
+    rows_before = len(df)
+    print(f'Antes: Hay {rows_before} filas.')
+
+    # --- CONTAR NULOS CRITICOS
+    rows_with_critics_nulls = df[['producto_id', 'nombre', 'categoria', 'costo']]
+    print(f'Filas con nulos criticos: {rows_with_critics_nulls}')
+    
+    # --- ELIMINAR NULOS CRITICOS
+    print('Eliminando nulos criticos...')
+    df = df.dropna(subset=['producto_id', 'nombre', 'categoria', 'costo'])
+
+    # --- CONTAR FILAS DESPUES
+    rows_after = len(df)
+    rows_deleted = rows_before - rows_after
+    print(f'Se eliminaron {rows_deleted} filas con nulos')
+    
+
+
+    # ====== RELLENAR ======#
+
+    # --- CONTAR NULOS EN UNA COLUMNA
+    null_category = df['proveedor'].isnull().sum()
+
+    # --- RELLENAR NULOS NO CRITICOS
+    df['proveedor'] = df['proveedor'].fillna('Sin proveedor')
+
+
+    # --- MOSTRAR NULOS NO CRITICOS
+
+    if null_category > 0:
+        print(f"Columna ['proveedor']: {null_category} nulos -> Rellenados con 'Sin proveedor'")
+    else:
+        print(f'Sin nulos que rellenar.')
+
+
+    # --- FINAL 
+    print(f'\nFilas después: {len(df)}')
+    print('✓ Productos listos (sin nulos)')
+
+
+    return df
+
+# --- EJECUTAR
+df_ventas = clean_ventas(df_ventas, 'Ventas')
+df_productos = clean_productos(df_productos, 'Productos')
 
 
 
