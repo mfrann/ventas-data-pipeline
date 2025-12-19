@@ -1,11 +1,11 @@
 producto_id,nombre,categoria,costo,proveedor
 101,Laptop Dell XPS 13,Electrónica,650.00,TechCorp
 102,Mouse Inalámbrico Logitech,Electrónica,35.00,TechCorp
-103,Cuaderno Universitario,Papelería,5.00,OfficeSupply
-104,Auriculares Sony WH-1000XM4,Electrónica,180.00,AudioPro
+103,Cuaderno Universitario,Papelería,5.00,
+104,Auriculares Sony WH-1000XM4,Electrónica,,AudioPro
 105,Bolígrafo BIC Azul (pack 12),Papelería,8.00,OfficeSupply
-106,Monitor LG 27 pulgadas,Electrónica,320.00,TechCorp
-107,Resma de Papel A4,Papelería,4.50,OfficeSupply
-108,Teclado Mecánico Corsair,Electrónica,110.00,TechCorp
+106,Monitor LG 27 pulgadas,,320.00,TechCorp
+107,Resma de Papel A4,Papelería,4.50,
+108,Teclado Mecánico Corsair,Electrónica,110.00,
 109,Silla Ergonómica Premium,Muebles,450.00,FurniturePlus
 110,Mochila para Laptop,Accesorios,75.00,BagWorld

@@ -153,11 +153,90 @@ print("="*60)
 
 #--- PASO 2: MANEJAR NULOS ---#
 
-null_data = df_ventas.isnull()
+def identify_nulls(df, name):
+    """
+    Solo mostrar donde hay nulos
+    """
 
-data_not_null = df_ventas.dropna()
+    print(f'\n--- {name.upper()} ---')
 
-print(data_not_null)
+    null_for_column = df.isnull().sum() #Contar nulos por columna
+    total_nulls = null_for_column.sum() #Suma total de numeros
+
+    if total_nulls == 0: 
+        print("✓ Sin valores nulos")
+    else: 
+        print("⚠ Valores nulos encontrados:") 
+        #Comprueba si valores nulos es mayor a 0 
+        for column, amount in null_for_column[null_for_column > 0].items(): #Y recorre por columna y cantidad en la variable, no usamos sum() pq iterariamos en un solo numero
+            print(f"  - {column}: {amount} nulos")
+    
+identify_nulls(df_ventas, 'Ventas')
+identify_nulls(df_clientes, 'Clientes')
+identify_nulls(df_productos, 'Productos')
+identify_nulls(df_vendedores, 'Vendedores')
+    
+
+#====== FUNCION PARA VENTAS ======#
+def clean_ventas(df, name):
+    
+    """
+        Eliminar filas con nulos en columnas críticas
+        Mostrar antes/después
+        Retornar DataFrame limpio
+    """
+
+    print(f'\n--- LIMPIANDO {name.upper()} ---')
+
+    #CONTAR FILAS ANTES
+    rows_before = len(df)
+    #CONTAR NULOS
+    nulls = df.isnull().sum()
+    total_nulls = nulls.sum() #Suma de todos los nulos
+
+    print(f'Filas antes: {rows_before}')
+    print(f'Filas con nulos: {total_nulls}')
+
+    #ELIMINAR NULOS
+    df = df.dropna() #Elimina los nulos
+
+    #CONTAR FILAS DESPUES
+
+    rows_after = len(df)
+    rows_deleted = rows_before - rows_after
+
+    print(f'Filas después: {rows_after}')
+    print(f'Filas eliminadas: {rows_deleted}')
+
+    #MENSAJE DE EXITO 
+
+    if rows_deleted == 0:
+        print('✓ Sin nulos para eliminar')
+    else:
+        print(f'✓ Se eliminaron {rows_deleted} filas con nulos')
 
 
 
+    return df
+
+
+df_ventas = clean_ventas(df_ventas, 'Ventas')
+
+
+#====== FUNCION PARA PRODUCTOS ======#
+def clean_productos(df):
+    pass
+
+
+
+
+
+'''
+
+def clean_clientes(df):
+    pass
+
+def clean_vendedores(df):
+    pass
+
+'''
