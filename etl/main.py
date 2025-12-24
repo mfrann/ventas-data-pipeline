@@ -11,6 +11,7 @@ from transform import (
     enrich_ventas,
     business_metrics
 )
+from load import save_to_csv
 
 def run_etl():
     #================================================#
@@ -98,10 +99,28 @@ def run_etl():
     #================================================#
     #          E.AGREGACIONES Y METRICAS             #
     #================================================#
-    print("\nRESPONDIENDO PREGUNTAS DE NEGOCIO")   
+    print("\nRESPONDIENDO PREGUNTAS DE NEGOCIO")
+    ventas_mes, top_products, top_clientes, perf_vendedores = business_metrics(df_ventas, df_vendedores)   
     df_ventas = business_metrics(df_ventas, df_vendedores)
 
     print("\n✓ PREGUNTAS CONTESTADAS")
+
+
+
+
+    print("===" * 30)
+    #================================================#
+    #              TODO: LOAD (GUARDAR)              #
+    #================================================#
+    print("\nGUARDANDO ARCHIVOS...")
+
+    save_to_csv(ventas_mes, "ventas_por_mes.csv")
+    save_to_csv(top_products, "top_products.csv")
+    save_to_csv(top_clientes, "top_clientes.csv")
+    save_to_csv(perf_vendedores, "perf_vendedores.csv")
+
+    print("\n✓ ARCHIVOS GUARDADOS CORRECTAMENTE")
+
     
     return df_ventas, df_productos, df_clientes, df_vendedores
 

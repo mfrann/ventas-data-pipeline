@@ -353,30 +353,30 @@ def business_metrics(df, dfv):
 
     print("\nCUANTO SE VENDE CADA MES?")
 
-    ventas_por_month = df.groupby([
+    ventas_mes = df.groupby([
          df['fecha'].dt.year.rename('year'), 
          df['fecha'].dt.month.rename('month'),
          df['fecha'].dt.month_name().rename('month_name')
 
     ])['total_ventas'].sum().reset_index()
 
-    print(ventas_por_month)
+    print(ventas_mes)
     print("===" * 30)
 
 
     # ? QUE PRODUCTOS GENERA MAS DINERO ?
     print("\nQUE PRODUCTOS GENERA MAS DINERO?")
 
-    ventas_por_product = df.groupby('producto_id')[['total_ventas', 'margen']].sum().reset_index().sort_values(by='total_ventas', ascending=False)
-    print(ventas_por_product)
+    top_products = df.groupby('producto_id')[['total_ventas', 'margen']].sum().reset_index().sort_values(by='total_ventas', ascending=False)
+    print(top_products)
     print("===" * 30)
 
 
     # ? QUIENES SON LOS CLIENTES MAS VALIOSOS ?
     print("\nQUIENES SON LOS CLIENTES MAS VALIOSOS?")
 
-    ventas_por_cliente = df.groupby('cliente_id')[['total_ventas', 'cantidad']].sum().reset_index().sort_values(by='total_ventas', ascending=False)
-    print(ventas_por_cliente)
+    top_clientes = df.groupby('cliente_id')[['total_ventas', 'cantidad']].sum().reset_index().sort_values(by='total_ventas', ascending=False)
+    print(top_clientes)
     print("===" * 30)
     '''
 
@@ -386,11 +386,11 @@ def business_metrics(df, dfv):
     # ? EN QUE SUCURSAL RINDEN MEJOR ? 
     
     '''
-    
+
     print("\nPERFORMANCE DE VENDEDORES")
 
     # * --- AGREGAR METRICAS POR VENDEDOR Y AGRUPAR
-    ventas_vendedor = df.groupby('vendedor_id').agg(
+    perf_vendedores = df.groupby('vendedor_id').agg(
          total_ventas=('total_ventas', 'sum'),
          unidades_vendidos =('cantidad', 'sum'),
          num_ventas =('vendedor_id', 'count')
@@ -398,25 +398,25 @@ def business_metrics(df, dfv):
 
 
     # * --- JOIN DE VENTAS.CSV CON VENDEDORES.CSV 
-    ventas_vendedor = ventas_vendedor.merge(
+    perf_vendedores = perf_vendedores.merge(
          dfv[['vendedor_id', 'nombre', 'sucursal']],
          on='vendedor_id',
          how='left'
     )
 
     # * --- METRICA DERIVADA: TICKET 
-    ventas_vendedor['ticket_promedio'] = (
-         ventas_vendedor['total_ventas'] / ventas_vendedor['num_ventas']
+    perf_vendedores['ticket_promedio'] = (
+         perf_vendedores['total_ventas'] / perf_vendedores['num_ventas']
     ).round(2)
 
 
     # * --- ORDENAR POR PERFOMANCE
-    ventas_vendedor = ventas_vendedor.sort_values(
+    perf_vendedores = perf_vendedores.sort_values(
          by='total_ventas',
          ascending=False
     )
 
-    print(ventas_vendedor)
+    print(perf_vendedores)
     
-    return ventas_por_month, ventas_por_product, ventas_por_cliente, ventas_vendedor
+    return ventas_mes, top_products, top_clientes, perf_vendedores
 
