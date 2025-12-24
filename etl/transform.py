@@ -5,8 +5,33 @@
 # === LIBRERIAS === #
 import pandas as pd
 
+
 #================================================#
-#                A.LIMPIEZA                      #
+#                A.VALIDACION                    #
+#================================================#
+# TODO: Revisar si existen los ID
+
+def validate_integrity(df_ventas, df_productos, df_clientes, df_vendedores):
+        products_id = set(df_productos['producto_id'])
+        clientes_id = set(df_clientes['cliente_id'])
+        vendedores_id = set(df_vendedores['vendedor_id'])
+
+        #Validar si IDs estan en VENTAS.CSV
+
+        mask_valid = (
+            df_ventas['producto_id'].isin(products_id)&
+            df_ventas['cliente_id'].isin(clientes_id)&
+            df_ventas['vendedor_id'].isin(vendedores_id)
+        )
+
+        ventas_validas = df_ventas[mask_valid].copy()
+        ventas_invalidas = df_ventas[~mask_valid].copy()
+
+        return ventas_validas, ventas_invalidas
+
+
+#================================================#
+#                B.LIMPIEZA                      #
 #================================================#
 
 # TODO: ELIMINAR DUPLICADOS
@@ -273,7 +298,9 @@ def clean_vendedores(df, name):
 
         return df
 
-
+#================================================#
+#                C.TIPO DE DATOS                 #
+#================================================#
 #TODO: CONVERTIR FECHA A DATETIME
 
 def convert_time(df, column, table_name):
@@ -285,6 +312,111 @@ def convert_time(df, column, table_name):
 
 
 
+#================================================#
+#                D.ENRIQUECER DATOS              #
+#================================================#
+#TODO: AGREGAR NUEVAS COLUMNAS A VENTAS.CSV
+
+def enrich_ventas(df_ventas, df_productos):
+     
+    # --- Creamos variable y lo unimos con las columnas seleccionadas de otro archivo **con merge()**
+    ventas = df_ventas.merge(
+        df_productos[['producto_id', 'costo']],
+        on='producto_id',
+        how='left'
+    )
+
+    # ---METRICAS FINANCIERAS
+    ventas['total_ventas'] = ventas['cantidad'] * ventas['precio']  #HACEMOS OPERACIONES TOTAL VENTAS = CANTIDAD * PRECIO
+    ventas['costo_total'] = ventas['cantidad'] * ventas['costo'] #COSTO TOTAL = CANTIDAD * COSTO
+    ventas['margen'] = ventas['total_ventas'] - ventas['costo_total'] #MARGEN = TOTAL VENTAS - COSTO TOTAL
 
 
+    # ---VARIABLES TEMPORALES
+    ventas['año'] = ventas['fecha'].dt.year #SELECCIONA AÑO
+    ventas['mes'] = ventas['fecha'].dt.month #SELECCIONA MES
+    ventas['mes_nombre'] = ventas['fecha'].dt.month_name() #SELECCIONA NOMBRE DEL MES
+
+    return ventas
+
+
+#================================================#
+#          E.AGREGACIONES Y METRICAS             #
+#================================================#
+'''
+#TODO: GENERAR TABLAS DE RESULTADOS LISTAS PARA REPORTE, DASHBOARD, SQL
+#RESPONDER PREGUNTAS DE NEGOCIO
+'''
+
+def business_metrics(df, dfv):
+    # ? CUANTO SE VENDE CADA MES ?
+
+    print("\nCUANTO SE VENDE CADA MES?")
+
+    ventas_por_month = df.groupby([
+         df['fecha'].dt.year.rename('year'), 
+         df['fecha'].dt.month.rename('month'),
+         df['fecha'].dt.month_name().rename('month_name')
+
+    ])['total_ventas'].sum().reset_index()
+
+    print(ventas_por_month)
+    print("===" * 30)
+
+
+    # ? QUE PRODUCTOS GENERA MAS DINERO ?
+    print("\nQUE PRODUCTOS GENERA MAS DINERO?")
+
+    ventas_por_product = df.groupby('producto_id')[['total_ventas', 'margen']].sum().reset_index().sort_values(by='total_ventas', ascending=False)
+    print(ventas_por_product)
+    print("===" * 30)
+
+
+    # ? QUIENES SON LOS CLIENTES MAS VALIOSOS ?
+    print("\nQUIENES SON LOS CLIENTES MAS VALIOSOS?")
+
+    ventas_por_cliente = df.groupby('cliente_id')[['total_ventas', 'cantidad']].sum().reset_index().sort_values(by='total_ventas', ascending=False)
+    print(ventas_por_cliente)
+    print("===" * 30)
+    '''
+
+    # ? QUE VENDEDOR VENDE MAS DINERO ? cantidad x precio
+    # ? QUIEN VENDE MAS UNIDADES ? cantidad
+    # ? CUANTAS VENTAS HIZO CADA VENDEDOR ? 
+    # ? EN QUE SUCURSAL RINDEN MEJOR ? 
+    
+    '''
+    
+    print("\nPERFORMANCE DE VENDEDORES")
+
+    # * --- AGREGAR METRICAS POR VENDEDOR Y AGRUPAR
+    ventas_vendedor = df.groupby('vendedor_id').agg(
+         total_ventas=('total_ventas', 'sum'),
+         unidades_vendidos =('cantidad', 'sum'),
+         num_ventas =('vendedor_id', 'count')
+    ).reset_index()
+
+
+    # * --- JOIN DE VENTAS.CSV CON VENDEDORES.CSV 
+    ventas_vendedor = ventas_vendedor.merge(
+         dfv[['vendedor_id', 'nombre', 'sucursal']],
+         on='vendedor_id',
+         how='left'
+    )
+
+    # * --- METRICA DERIVADA: TICKET 
+    ventas_vendedor['ticket_promedio'] = (
+         ventas_vendedor['total_ventas'] / ventas_vendedor['num_ventas']
+    ).round(2)
+
+
+    # * --- ORDENAR POR PERFOMANCE
+    ventas_vendedor = ventas_vendedor.sort_values(
+         by='total_ventas',
+         ascending=False
+    )
+
+    print(ventas_vendedor)
+    
+    return ventas_por_month, ventas_por_product, ventas_por_cliente, ventas_vendedor
 

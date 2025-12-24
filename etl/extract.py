@@ -20,4 +20,3 @@ def extract_csv():
     
     except FileNotFoundError as e:
         print(f'✗ Error: {e}')
-        exit()
