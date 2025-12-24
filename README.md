@@ -13,8 +13,6 @@ Construir un pipeline ETL que:
 - Enriquezca los datos con métricas clave
 - Genere resultados agregados persistentes
 
-El proyecto está diseñado como **portfolio de Data Engineering**, aplicando buenas prácticas de modularidad y arquitectura.
-
 ---
 
 ## ❓ Preguntas de Negocio que Responde
