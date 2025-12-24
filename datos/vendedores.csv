@@ -1,5 +1,5 @@
 vendedor_id,nombre,sucursal,fecha_ingreso
-1,Pedro Sánchez,Lima Centro,2022-01-10
-2,Sofía Mendoza,Lima Norte,2022-03-15
-3,Ricardo Vargas,Arequipa,2022-06-20
-4,Lucía Ramírez,Lima Sur,2023-02-01
+1,Pedro,Lima,2022-01-10
+2,Lucia,,2021-05-20
+3,Marco,Arequipa,
+4,Sofia,,2023-02-15

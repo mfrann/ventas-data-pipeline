@@ -1,16 +1,6 @@
 cliente_id,nombre,email,ciudad,segmento,fecha_registro
-201,Juan Pérez,juan.perez@email.com,Lima,VIP,2023-01-15
-202,María González,maria.gonzalez@email.com,Arequipa,Regular,2023-03-20
-203,Carlos Rodríguez,carlos.rodriguez@email.com,Trujillo,Nuevo,2024-01-05
-204,Ana Martínez,ana.martinez@email.com,Lima,Regular,2023-06-10
-205,Luis Torres,luis.torres@email.com,Cusco,VIP,2022-11-25
-206,Carmen Silva,carmen.silva@email.com,Lima,Regular,2023-08-14
-207,Roberto Flores,roberto.flores@email.com,Chiclayo,Nuevo,2024-01-12
-208,Patricia Vega,patricia.vega@email.com,Lima,VIP,2023-02-28
-209,Jorge Ramos,jorge.ramos@email.com,Piura,Regular,2023-05-17
-210,Laura Castillo,laura.castillo@email.com,Lima,Regular,2023-07-22
-211,Miguel Herrera,miguel.herrera@email.com,Arequipa,Nuevo,2024-01-18
-212,Isabel Morales,isabel.morales@email.com,Lima,VIP,2022-09-30
-213,Fernando Cruz,fernando.cruz@email.com,Tacna,Regular,2023-04-11
-214,Gabriela Ríos,gabriela.rios@email.com,Lima,Regular,2023-10-05
-215,Diego Vargas,diego.vargas@email.com,Iquitos,Nuevo,2024-01-20
+1,Juan Perez,juan@mail.com,Lima,Premium,2023-01-31
+2,Maria Gomez,,Arequipa,Regular,2023-02-28
+3,Luis Torres,luis@mail.com,,,2023-03-31
+4,Ana Diaz,,Cusco,Premium,2023-04-30
+5,Carlos Ruiz,carlos@mail.com,,,2023-05-31
