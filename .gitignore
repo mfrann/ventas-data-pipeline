@@ -3,11 +3,9 @@
 
 # Entornos virtuales
 .ventas-pipeline/
-.venv/
+
 
 # Python cache
 __pycache__/
 *.pyc
 
-# Outputs generados
-outputs/
