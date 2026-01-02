@@ -106,8 +106,8 @@ Estos archivos quedan listos para:
 1. **Clonar el repositorio**
 
 ```bash
-git clone https://github.com/tu-usuario/etl-students-grades.git
-cd etl-students-grades
+git clone https://github.com/mfrann/ventas-data-pipeline.git
+cd ventas-data-pipeline
 ```
 
 2. **Crear entorno virtual (recomendado)**
@@ -146,3 +146,4 @@ python etl/main.py
 ---
 
 ⭐ Si este proyecto te fue útil, considera darle una estrella en GitHub :)
+
